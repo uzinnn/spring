@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+
+	<settings>
+		<!-- 언더바 형태를 카멜형태로 바꿔주는 셋팅 -->
+		 <setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+
+	<typeAliases>
+		<typeAlias type="kh.spring.s01.board.model.vo.BoardVo" alias ="BoardVo"/>
+	</typeAliases>
+	
+	<mappers>
+	 <mapper resource="mappers/board-mapper.xml"/>
+	</mappers>
+</configuration>
