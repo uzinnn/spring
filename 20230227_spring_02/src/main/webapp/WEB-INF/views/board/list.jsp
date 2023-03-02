@@ -7,6 +7,16 @@
 <title>Insert title here</title>
 </head>
 <body>
-[${boardlist} ]
+
+
+<hr>
+
+	<c:forEach begin="${pageInfo.startPage }" end="${pageInfo.endPage}" >
+		${page }
+		<c:if test="${pageInfo.endPage != page}">
+		,
+		</c:if>
+	</c:forEach>
+
 </body>
 </html>
