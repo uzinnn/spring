@@ -7,16 +7,21 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+<h1>게시판 글목록</h1>
+[ ${boardlist } ]
+<c:forEach items="${boardlist }" var="board">
+	${board.boardNum }<br>
+</c:forEach>
 
 <hr>
-
-	<c:forEach begin="${pageInfo.startPage }" end="${pageInfo.endPage}" >
+	<c:forEach begin="${pageInfo.startPage}" end="${pageInfo.endPage}" var="page">
 		${page }
 		<c:if test="${pageInfo.endPage != page}">
-		,
-		</c:if>
+		,	
+		</c:if> 
 	</c:forEach>
+<hr>
+
 
 </body>
 </html>

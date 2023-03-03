@@ -30,6 +30,14 @@ public class BoardController {
 	private final static int BOARD_LIMIT = 5; 
 	private final static int PAGE_LIMIT = 3;
 	
+	//검색단어는 제목,내용,작성자에서 포함되어있으면 찾기
+			//null 또는 ""은 검색하지 않음
+			//String searchWord="";
+			//String searchWord=null;
+			
+			String searchWord="user";
+			
+	
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView viewListBoard( ModelAndView mv) {
 		// TODO
@@ -55,7 +63,12 @@ public class BoardController {
 //		mv.addObject("startPage", startPage);
 //		mv.addObject("endPage", endPage);
 //		mv.addObject("currentPage", currentPage);
-		mv.addObject("boardlist", service.selectList(currentPage, BOARD_LIMIT));
+		
+		
+		
+		
+		
+		mv.addObject("boardlist", service.selectList(currentPage, BOARD_LIMIT, searchWord));
 		mv.setViewName("board/list");
 		return mv;
 	}

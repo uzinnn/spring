@@ -44,29 +44,33 @@ public class BoardDao {
 //		return aa.selectList("boardns.selectListid", null, rb);		
 		return aa.selectList("boardns.selectListid", null, new RowBounds((currentPage-1)*limit,limit));		
 	}
+	public List<BoardVo> selectList(int currentPage, int limit, String searchWord) {
+		return aa.selectList("boardns.selectListid", searchWord, new RowBounds((currentPage-1)*limit,limit));		
+	}
+	
 	public int selectOneCount() {
 		return aa.selectOne("boardns.selectOneCount");
 	}
-//	public List<HashMap<String, Object>> tempSelect(){
-	public List<BoardVo> tempSelect(){
-//		List<HashMap<String, Object>> listmap = aa.selectList(listmap);
-//		for(HashMap<String, Object> map : listmap ) {
-//			System.out.println((String)map.get("boardDate"));
-//			
-//		}
-		
-		List
-		
-	}	return listmap; 
 	
+	public int selectOneCount(String searchWord) {
+		return aa.selectOne("boardns.selectOneCount",searchWord);
+	}
+//	public List<HashMap<String, Object>> tempSelect() {
+	public List<BoardVo> tempSelect() {
+//		return aa.selectList("boardns.tempSelect");
+//		List<HashMap<String, Object>> listmap = aa.selectList("boardns.tempSelect");
+//		for(HashMap<String, Object> map : listmap) {
+//			System.out.println((String)map.get("boardDate"));
+//		}
+		// property = key = attribute = column = field
+		List<BoardVo> volist = aa.selectList("boardns.tempSelect");
+		for(BoardVo vo : volist) {
+			System.out.println(vo.getBoardDate());
+		}
+		return volist;
+	}
 	/*
 	 * public BoardVo selectList2() { return
 	 * sqlSession.selectOne("boardns.selectListid2"); }
 	 */
 }
-	
-	
-//	public List<BoardVo> selectList2(){
-//		return sqlSession.selectList("boardns.selectListid2");
-//	}
-
