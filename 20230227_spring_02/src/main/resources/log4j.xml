@@ -10,6 +10,7 @@
 		</layout>
 	</appender>
 	
+	
 	<!-- Application Loggers -->
 	<logger name="kh.spring.s02">
 		<level value="info" />
@@ -33,20 +34,28 @@
 	</logger>
 	
 	<!-- SQL Logger -->
-    <logger name="jdbc.sqltiming" additivity="false">
+   <logger name="jdbc.sqltiming" additivity="false">
         <level value="warn"/>
+        <appender-ref ref="console"/>
     </logger>
+
     <logger name="jdbc.sqlonly" additivity="false">
         <level value="info"/>
+        <appender-ref ref="console"/>
     </logger>
     <logger name="jdbc.audit" additivity="false">
         <level value="warn"/>
+        <appender-ref ref="console"/>
     </logger>
+
     <logger name="jdbc.resultset" additivity="false">
         <level value="warn"/>
+        <appender-ref ref="console"/>
     </logger>
+
     <logger name="jdbc.resultsettable" additivity="false">
         <level value="info"/>
+        <appender-ref ref="console"/>
     </logger>
 	<!-- Root Logger -->
 	<root>

@@ -34,6 +34,9 @@ public class AdviceLog {
 	@Around("controllerPointCut()")
 	public Object aroundControllerPointCut(ProceedingJoinPoint pjp) throws Throwable{
 		Object returnObj = null;
+		//pjp.getThis()  클래스명
+		//pjp.getSignature().getName() 메소드명
+		logger.info("▶Ctrl :" + pjp.getThis() + pjp.getSignature().getName());
 		
 		Object[] args = pjp.getArgs();
 		for(int i=0; i<args.length; i++) {
@@ -55,6 +58,7 @@ public class AdviceLog {
 	@Around("serviceImplPointCut()")
 	public Object aroundServiceImplPointCut(ProceedingJoinPoint pjp) throws Throwable{
 		Object returnObj = null;
+		logger.info("▶▶Srvc :" + pjp.getThis() + pjp.getSignature().getName());
 		Object[] args = pjp.getArgs();
 		for(int i=0; i<args.length; i++) {
 			logger.info("▶▶args["+i+"]"+args[i]);
@@ -75,6 +79,7 @@ public class AdviceLog {
 	@Around("daoPointCut()")
 	public Object aroundDaoPointCut(ProceedingJoinPoint pjp) throws Throwable{
 		Object returnObj = null;
+		logger.info("▶▶▶DAO :" + pjp.getThis() + pjp.getSignature().getName());
 		Object[] args = pjp.getArgs();
 		for(int i=0; i<args.length; i++) {
 			logger.info("▶▶▶args["+i+"]"+args[i]);
