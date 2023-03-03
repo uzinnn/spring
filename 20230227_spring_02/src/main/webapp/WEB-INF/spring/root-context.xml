@@ -9,14 +9,14 @@
 		
 		<bean class="org.apache.commons.dbcp.BasicDataSource" id="dataSource">
 			
-			 
+			 <!-- 
 			<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"></property>
 			<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:xe"></property>
+			 -->
 			
-			<!-- 
 			<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
 			<property name="url" value="jdbc:log4jdbc:oracle:thin:@127.0.0.1:1521:xe"></property>
-			 -->
+		
 			<property name="username" value="KH"></property>
 			<property name="password" value="KH"></property>
 		</bean>

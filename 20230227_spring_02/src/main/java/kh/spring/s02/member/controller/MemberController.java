@@ -2,6 +2,8 @@ package kh.spring.s02.member.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +22,7 @@ public class MemberController {
 	@Autowired
 	private MemberService service;
 
-	@GetMapping("/signUp")
+		@GetMapping("/signUp")
 		public ModelAndView viewInsert(ModelAndView mv) {
 	
 		mv.setViewName("member/signUp");
@@ -28,32 +30,33 @@ public class MemberController {
 		return mv;
 	}
 	
-	// @PostMapping("/signUp")	
-	
-	@GetMapping("/testSignUp")
-	public ModelAndView insert(ModelAndView mv,MemberVo vo) {
-		vo.setEmail("emailddd");
-		vo.setId("iddd");
-		vo.setName("namess");
-		vo.setPasswd("passwdddd");
+	 @PostMapping("/signUp")	
+	 public ModelAndView insert(ModelAndView mv,MemberVo vo) {
 		
 		int result=service.insert(vo);
+		if(result>0) {
+			mv.setViewName("redirect:/");
+		}else {
+			mv.setViewName("redirect:/member/signUp");
+		}
+		
 		return mv;
 	}
 		
 	@GetMapping("/update")
-		public ModelAndView update(ModelAndView mv) {
-		
+		public ModelAndView update(ModelAndView mv
+				,String id
+				) {
+		MemberVo vo = service.selectOne(id);
+		mv.addObject("memberVo", vo);
+		mv.setViewName("/member/update");
 		return mv;
 		
 	}
 	
-	//@PostMapping("/update")
-	@GetMapping("/testUpdate")
+	@PostMapping("/update")
 	public ModelAndView update(ModelAndView mv, MemberVo vo) {
-		vo.setEmail("user3333@s.s");
-		vo.setId("user3");
-		vo.setPasswd("user333");
+		
 		service.update(vo);
 		
 		return mv;
@@ -73,9 +76,15 @@ public class MemberController {
 		}
 	
 	@GetMapping("/info")
-		public ModelAndView selectOne(ModelAndView mv  ) {
+		public ModelAndView selectOne(ModelAndView mv
+				, String id //request.getParameter("") 
+				) {
 		
-		String id="user3";
+		if(id == null) {
+			mv.setViewName("redirect:/");
+			return mv;
+		}
+		
 		MemberVo result = service.selectOne(id);
 		return mv;
 		}
