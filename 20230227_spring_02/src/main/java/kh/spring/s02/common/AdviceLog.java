@@ -36,11 +36,11 @@ public class AdviceLog {
 		Object returnObj = null;
 		//pjp.getThis()  클래스명
 		//pjp.getSignature().getName() 메소드명
-		logger.info("▶Ctrl :" + pjp.getThis() + pjp.getSignature().getName());
+		logger.info("▶Ctrl :" + pjp.getThis() +" "+ pjp.getSignature().getName());
 		
 		Object[] args = pjp.getArgs();
 		for(int i=0; i<args.length; i++) {
-			logger.info("▶args["+i+"]"+args[i]);
+			logger.info("▶args["+i+"]: "+args[i]);
 			
 		}
 		StopWatch stopwatch = new StopWatch();

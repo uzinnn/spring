@@ -18,11 +18,6 @@
 	<result column="board_Readcount" property="boardReadcount"/>
 </resultMap>
 
-
-<resultMap type="bvo" id="rsMap" >
-	<result column="sdate" property="boardDate"/>
-	<result column="board_num" property="boardRef"/>
-</resultMap>
 	
 <insert id="insertid" parameterType="kh.spring.s02.board.model.vo.BoardVo">
 	insert into board values
@@ -86,8 +81,8 @@
 	delete from board where board_Num = #{boardNum}
 </delete>
 
-<!-- <select id="selectOneid" resultType="bvoMap"> -->
-<select id="selectOneid" resultType="kh.spring.s02.board.model.vo.BoardVo">
+ <select id="selectOneid" resultMap="bvoMap"> 
+<!-- <select id="selectOneid" resultType="kh.spring.s02.board.model.vo.BoardVo">-->
 	select * from board where board_Num = #{boardNum}
 </select>
 <select id="selectListid" resultMap="bvoMap">
@@ -121,43 +116,46 @@ select BOARD_NUM,BOARD_TITLE, BOARD_WRITER, BOARD_CONTENT
 	select * from board
 </select>
  -->
- 
- 	<select id="tempCallableSelect"
- 		 statementType="CALLABLE"
- 		 parameterType="bvo" resultType="bvo">
-	 {
-		 CALL f1()
-	 }
-
- 	</select>
- 	
- 	<select id="tempTrimSelect">
+ 	<select id="selectReplyList" resultMap="bvoMap">
  		select * from board
- 			<trim prefix="where" prefixOverrides="AND|OR">
- 				<if test="searchWord != null and searchWord neq ''">
- 					title like #{searchWord}
- 					or content like #{searchWord}
- 				</if>
- 			</trim>
+ 			where BOARD_LEVEL > (select BOARD_LEVEL from board where board_Num=#{board_Num})
+		 	    and	BOARD_REF = (select BOARD_REF from board where board_Num=#{board_Num})
+		 		and	BOARD_REPLY_SEQ > (select BOARD_REPLY_SEQ from board where board_Num=#{board_Num})
+		 	order by BOARD_REPLY_SEQ asc
  	</select>
+ 
+ 
+ 
+<select id="tempCallableSelect" 
+		statementType="CALLABLE"
+		parameterType="bvo" resultType="bvo">
+{	CALL p1   }
+</select>
+ 
+ 	
+<select id="tempTrimSelect">
+	select * from board
+		<trim prefix="where" prefixOverrides="AND|OR">
+			1 = 1 and
+		<if test="searchWord != null and searchWord neq ''">
+			and title like #{searchWord}
+			or content like #{searchWord}
+		</if>
+		</trim>
+</select>
  	
  	
- 	
- 	<delete id="tempForeachDelete">
+<delete id="tempForeachDelete">
 	delete from board
 	<where>
-	<![CDATA[
- 			1<>1 or
- 		]]> 
+<![CDATA[
+		1<>1 or
+]]>
 		<foreach collection="list" item="bnum" open="board_num in (" close=")" separator=",">
 		#{bnum}
 		</foreach>
 	</where>
 </delete> 
  
- 	
- 	
- 	
- 	
- 	
+
 </mapper>

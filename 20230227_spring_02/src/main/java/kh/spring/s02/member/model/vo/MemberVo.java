@@ -1,14 +1,17 @@
 package kh.spring.s02.member.model.vo;
 
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 @Component
 public class MemberVo {
 	
+	// 유효성체크가능 @Validated
 	private String id; 
 	private String passwd;
 	private String 	name;
 	private String email;
+	private String aaa;
 	
 	
 	public MemberVo(String id, String passwd, String name, String email) {

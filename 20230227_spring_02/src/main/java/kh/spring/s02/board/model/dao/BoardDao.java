@@ -73,4 +73,11 @@ public class BoardDao {
 	 * public BoardVo selectList2() { return
 	 * sqlSession.selectOne("boardns.selectListid2"); }
 	 */
+	
+	public List<BoardVo> selectReplyList(int boardNum) {
+		return aa.selectList("boardns.selectReplyList", boardNum);		
+	}
+	
+	
+	
 }

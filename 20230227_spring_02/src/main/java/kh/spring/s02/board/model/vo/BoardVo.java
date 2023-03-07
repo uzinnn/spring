@@ -6,7 +6,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BoardVo {
-	private int boardNum;
+	private static final long serialVersionUID = 1L;
+	private int  boardNum;
 	private String boardTitle;
 	private String boardWriter;
 	private String boardContent;

@@ -15,25 +15,25 @@ public class MemberServiceImpl implements MemberService{
 	private MemberDao dao;
 	
 	@Override
-	public int insert(MemberVo vo) {
+	public int insert(MemberVo vo) throws Exception {
 		
 		return dao.insert(vo);
 	}
 
 	@Override
-	public int update(MemberVo vo) {
+	public int update(MemberVo vo) throws Exception {
 		// TODO Auto-generated method stub
 		return dao.update(vo);
 	}
 
 	@Override
-	public int delete(String id) {
+	public int delete(String id) throws Exception {
 		// TODO Auto-generated method stub
 		return dao.delete(id);
 	}
 
 	@Override
-	public MemberVo selectOne(String id) {
+	public MemberVo selectOne(String id) throws Exception {
 		
 		return dao.selectOne(id);
 	}

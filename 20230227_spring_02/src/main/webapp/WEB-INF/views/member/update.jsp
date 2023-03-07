@@ -12,6 +12,7 @@
 		<input value="${membervo.passwd }" type="password" name="passwd" placeholder="pass"><br>
 		<input value="${membervo.name }" type="text" name="name" placeholder="name" readonly="readonly"><br>
 		<input value="${membervo.email }" type="text" name="email" placeholder="email"><br>
+	
 		<button type="submit">제출</button>
 	</form>
 

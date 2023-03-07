@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="memberMapper">
 	
-	 <resultMap type="mvo" id="MMap">
+	 <resultMap type="mvo" id="mMap">
 	 	<id column="ID" property="id"/>
 	 	<result column="PASSWD" property="passwd"/>
 	 	<result column="NAME" property="name"/>
@@ -16,7 +16,8 @@
 	  </insert>
 	  
 	  <update id="updateId" parameterType="mvo">
-	   update test_member set PASSWD=#{passwd}
+	   update test_member set 
+	   					  PASSWD=#{passwd}
 	 				     ,EMAIL=#{email} 
 	 	       where ID = #{id}
 	  
@@ -28,12 +29,13 @@
 	  
 	  </delete>
 	  
-	  <select id="selectOneId"  parameterType="String" resultMap="mMap">
+	  <select id="selectOneId"  parameterType="String" resultType="mvo">
+	 <!-- <select id="selectOneId"  parameterType="String" resultMap="mMap"> -->
 	  	select * from test_member where ID=#{id}
 	  </select>
 	  
 	    <select id="selectListId" resultType="mvo">
-		select count(*) cnt from test_member where ID=#{id}		
+		select * from test_member 
 	  </select>
 		  
 </mapper>
