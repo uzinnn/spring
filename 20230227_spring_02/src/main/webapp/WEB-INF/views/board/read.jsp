@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
+<c:set var = "cpath" value="${pageContext.request.contextPath }"></c:set>
+
+<c:set var = "uploadpath" value="/resoureces/uploadfiles/"></c:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,14 +20,17 @@
 	<div>
 		${board.boardContent }
 	</div>
-	
+		<div>
+		<img src="${cpath }${uploadpath}${board.boardRenameFilename}">
+	</div>
 	<form id="frmReply">
-	<fieldset>	<legend>답글작성</legend>
+	<fieldset>	
+	<legend>답글작성</legend>
 	<div>제목<input type="text" name="boardTitle"></div>
 	<div>내용<input type="text" name="boardContent" ></div>
 	<input type="hidden" name="boardNum" value="${board.boardNum }">
 	<button type="button" class="btn reply">답글작성</button>
-	// <button type="reset" >초기화</button>
+	 <button type="reset" >초기화</button>
 	 </fieldset>
 	 </form>
 	 <hr>
@@ -63,7 +69,7 @@
 			console.log($(this)); //this를 jquery 형태로 변형
 			console.log($("#frmReply").serialize());
 			$.ajax({
-				url:"<%=request.getContextPath()%>/board/insertReplyAjax"
+				url:"%{pageContext.request.contextPath}/board/insertReplyAjax"
 				,type:"post"
 				,data: $("#frmReply").serialize() //querystring
 				

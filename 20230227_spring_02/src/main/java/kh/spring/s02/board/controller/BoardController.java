@@ -1,9 +1,12 @@
 package kh.spring.s02.board.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -11,18 +14,23 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 
 import kh.spring.s02.board.model.service.BoardService;
 import kh.spring.s02.board.model.vo.BoardVo;
+import kh.spring.s02.common.file.FileUtil;
+
 
 
 @Controller
@@ -35,9 +43,10 @@ public class BoardController {
 	
 	private final static int BOARD_LIMIT = 5; 
 	private final static int PAGE_LIMIT = 3;
+	private final static String UPLOAD_FOLDER = "\\resources\\uploadfiles";
 	
-	//검색단어는 제목,내용,작성자에서 포함되어있으면 찾기
-			//null 또는 ""은 검색하지 않음
+	//검색단어는 제목,내영,단어,작성자에게 포함되어있으면 찾기
+			//null 또는 ""는 검색하지않음
 			//String searchWord="";
 			//String searchWord=null;
 			
@@ -46,22 +55,22 @@ public class BoardController {
 	@RequestMapping("/list")
 	//@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView viewListBoard( ModelAndView mv, HttpServletRequest req) {
-		// 검색단어는 제목,내용,작성자에서 포함되어있으면 찾기
-				// null 또는 "" 은 검색하지 않음.
+		// 寃��깋�떒�뼱�뒗 �젣紐�,�궡�슜,�옉�꽦�옄�뿉�꽌 �룷�븿�릺�뼱�엳�쑝硫� 李얘린
+				// null �삉�뒗 "" �� 寃��깋�븯吏� �븡�쓬.
 //				String searchWord = null;  
 //				String searchWord = "";  
-				String searchWord = "답";
+				String searchWord = "�떟";
 
 				try {
 					req.setCharacterEncoding("UTF-8");
 					searchWord = req.getParameter("searchWord");
-					System.out.println("한글 확인: "+ searchWord);
+					System.out.println("�븳湲� �솗�씤: "+ searchWord);
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
 				
 				// TODO
-				int currentPage = 2;
+				int currentPage = 1;
 				int totalCnt = service.selectOneCount(searchWord);
 				int totalPage = (totalCnt%BOARD_LIMIT==0)?
 						(totalCnt/BOARD_LIMIT) : 
@@ -99,10 +108,10 @@ public class BoardController {
 	public void updateBoard() {
 		// TODO
 		int boardNum = 1;
-		String boardTitle = "수정제목";
-		String boardContent = "수정내용";
-		String boardOriginalFilename = "";  // "" 파일없음
-		String boardRenameFilename = "";  // "" 파일없음
+		String boardTitle = "�닔�젙�젣紐�";
+		String boardContent = "�닔�젙�궡�슜";
+		String boardOriginalFilename = "";  // "" �뙆�씪�뾾�쓬
+		String boardRenameFilename = "";  // "" �뙆�씪�뾾�쓬
 		
 		BoardVo vo = new BoardVo();
 		vo.setBoardTitle(boardTitle);
@@ -121,7 +130,7 @@ public class BoardController {
 		int result = service.delete(boardNum);
 	}
 	
-	//글 상세 읽기 화면
+	//湲� �긽�꽭 �씫湲� �솕硫�
 	@GetMapping("/read")
 	public ModelAndView viewReadBoard(
 			ModelAndView mv,
@@ -151,17 +160,29 @@ public class BoardController {
 		mv.setViewName("board/insert");
 		return mv;
 	}
-	
-	// 원글 작성 
-//	@PostMapping("/insert")
-	// TODO
-	@GetMapping("/insertPostTest")
+	//원글작성
+	@PostMapping("/insert")
 	public ModelAndView doInsertBoard(ModelAndView mv
+			, MultipartHttpServletRequest multiReq
+			, MultipartFile report //==@RequestParam(name="report", required=false) MultipartFile multi
+			, HttpServletRequest request
 			, BoardVo vo
 			) {
-		vo.setBoardContent("임시내용");
-		vo.setBoardTitle("임시제목");
-		vo.setBoardWriter("user22");
+	
+		Map<String,String> filePath;
+		List<Map<String,String>> fileListPath;
+		try {
+			fileListPath = new FileUtil().saveFileList(multiReq, request, null);
+			filePath = new FileUtil().saveFile(report, request, null);
+			//vo.setBoardOriginalFilename(report.getOriginalFilename());
+			//vo.setBoardRenameFilename(renameFilePath); //resources/fileupload/uuid_a.png
+			vo.setBoardOriginalFilename(filePath.get("original"));
+			vo.setBoardRenameFilename(filePath.get("rename"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+			
+		vo.setBoardWriter("user22");//TODO
 		int result = service.insert(vo);
 		return mv;
 	}
@@ -174,20 +195,20 @@ public class BoardController {
 //		int boardNum = 6;
 //		vo.setBoardNum(boardNum);
 //		
-//		vo.setBoardContent("임시6답내용");
-//		vo.setBoardTitle("임시6답제목");
+//		vo.setBoardContent("�엫�떆6�떟�궡�슜");
+//		vo.setBoardTitle("�엫�떆6�떟�젣紐�");
 		vo.setBoardWriter("user22");
 		
 		service.insert(vo);
 		List<BoardVo> replyList = service.selectReplyList(vo.getBoardNum());
-		//ajax는 mv에 실려갈수없음. mv.addObject("replyList",replyList);
+		//ajax�뒗 mv�뿉 �떎�젮媛덉닔�뾾�쓬. mv.addObject("replyList",replyList);
 		
 		return new Gson().toJson(replyList);
-		//자바형을 json 형태로(object) 바꿔서 js에 넣어준다
+		//�옄諛뷀삎�쓣 json �삎�깭濡�(object) 諛붽퓭�꽌 js�뿉 �꽔�뼱以��떎
 	}
 	
 	
-	// 답글작성 페이지이동
+	//답글작성 페이지 이동
 	@GetMapping("/insertReply")
 	public ModelAndView viewInsertReply(ModelAndView mv
 			, int boardNum // 몇번글에 답글인지 
@@ -195,7 +216,7 @@ public class BoardController {
 		mv.setViewName("insertReply");
 		return mv;
 	}
-	// 답글작성
+	// �떟湲��옉�꽦
 //	TODO
 //	@PostMapping("/insertReply")
 	@GetMapping("/insertReplyPostTest")
@@ -206,8 +227,8 @@ public class BoardController {
 		int boardNum = 6;
 		vo.setBoardNum(boardNum);
 		
-		vo.setBoardContent("임시6답내용");
-		vo.setBoardTitle("임시6답제목");
+		vo.setBoardContent("�엫�떆6�떟�궡�슜");
+		vo.setBoardTitle("�엫�떆6�떟�젣紐�");
 		vo.setBoardWriter("user22");
 		
 		service.insert(vo);
@@ -221,5 +242,7 @@ public class BoardController {
 
 		return mv;
 	}
+	
+	//@ExceptionHandler
 	
 }
