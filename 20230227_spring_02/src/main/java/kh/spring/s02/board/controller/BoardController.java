@@ -12,10 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,12 +36,15 @@ import kh.spring.s02.common.file.FileUtil;
 
 
 @Controller
-//@WebServlet("/boardinsert")
 @RequestMapping("/board")
 public class BoardController {
 	
 	@Autowired
 	private BoardService service;
+
+	@Autowired
+	@Qualifier("fileUtil")
+	private FileUtil fileUtil;
 	
 	private final static int BOARD_LIMIT = 5; 
 	private final static int PAGE_LIMIT = 3;
@@ -130,11 +135,18 @@ public class BoardController {
 		int result = service.delete(boardNum);
 	}
 	
-	//湲� �긽�꽭 �씫湲� �솕硫�
-	@GetMapping("/read")
+	//URL
+	//1. /board/read?boardNum=26&replyPage=3
+	//2. /board/read/27/3
+	
+	//글 상세읽기화면
+	@GetMapping("/read/boardNum/{replyPage}")
 	public ModelAndView viewReadBoard(
 			ModelAndView mv,
-			@RequestParam("boardNum") int boardNum
+			
+			@PathVariable int boardNum,
+			@PathVariable int replyPage
+			//@RequestParam("boardNum") int boardNum
 			) {
 		//TODO
 		String writer = "user22";
@@ -160,6 +172,7 @@ public class BoardController {
 		mv.setViewName("board/insert");
 		return mv;
 	}
+	
 	//원글작성
 	@PostMapping("/insert")
 	public ModelAndView doInsertBoard(ModelAndView mv
@@ -167,13 +180,14 @@ public class BoardController {
 			, MultipartFile report //==@RequestParam(name="report", required=false) MultipartFile multi
 			, HttpServletRequest request
 			, BoardVo vo
+			
 			) {
 	
 		Map<String,String> filePath;
 		List<Map<String,String>> fileListPath;
 		try {
-			fileListPath = new FileUtil().saveFileList(multiReq, request, null);
-			filePath = new FileUtil().saveFile(report, request, null);
+			//fileListPath =fileUtil.saveFileList(multiReq, request, null);
+			filePath = fileUtil.saveFile(report, request, null);
 			//vo.setBoardOriginalFilename(report.getOriginalFilename());
 			//vo.setBoardRenameFilename(renameFilePath); //resources/fileupload/uuid_a.png
 			vo.setBoardOriginalFilename(filePath.get("original"));
@@ -189,19 +203,25 @@ public class BoardController {
 	
 	@PostMapping("/insertReplyAjax")
 	@ResponseBody
-	public String inser(BoardVo vo) {
+	public String inser(BoardVo vo, MultipartFile report) {
+		if( report != null) {
+			System.out.println(report.getOriginalFilename());
+		}else {
+			System.out.println("ㅠㅏ일업ㅇㄹ");
+		}
     	System.out.println("######");
 		System.out.println(vo);
 //		int boardNum = 6;
 //		vo.setBoardNum(boardNum);
 //		
-//		vo.setBoardContent("�엫�떆6�떟�궡�슜");
-//		vo.setBoardTitle("�엫�떆6�떟�젣紐�");
+//		vo.setBoardContent("임시 6답내용");
+//		vo.setBoardTitle("임시6답제목");
 		vo.setBoardWriter("user22");
 		
+		// 답글작성
 		service.insert(vo);
 		List<BoardVo> replyList = service.selectReplyList(vo.getBoardNum());
-		//ajax�뒗 mv�뿉 �떎�젮媛덉닔�뾾�쓬. mv.addObject("replyList",replyList);
+		//ajax는 mv에 실어갈 ㅅ우 없음 mv.addObject("replyList",replyList);
 		
 		return new Gson().toJson(replyList);
 		//�옄諛뷀삎�쓣 json �삎�깭濡�(object) 諛붽퓭�꽌 js�뿉 �꽔�뼱以��떎
